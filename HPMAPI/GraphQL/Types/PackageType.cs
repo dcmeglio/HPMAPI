@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace HPMAPI.GraphQL.Types
 {
-    public class Package : ObjectGraphType<HPMAPI.Entities.Package>
+    public class PackageType : ObjectGraphType<HPMAPI.Entities.Package>
     {
-        public Package()
+        public PackageType()
         {
             Field(x => x.name);
             Field(x => x.category);

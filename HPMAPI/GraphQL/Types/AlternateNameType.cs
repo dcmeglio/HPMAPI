@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace HPMAPI.GraphQL.Types
 {
-    public class AlternateName : ObjectGraphType<HPMAPI.Entities.AlternateName>
+    public class AlternateNameType : ObjectGraphType<HPMAPI.Entities.AlternateName>
     {
-        public AlternateName()
+        public AlternateNameType()
         {
             Field(x => x.name);
             Field(x => x.@namespace);

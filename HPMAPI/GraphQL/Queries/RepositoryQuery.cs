@@ -1,6 +1,7 @@
 ﻿using GraphQL;
 using GraphQL.Types;
 using HPMAPI.GraphQL.Types;
+using HPMAPI.Interfaces;
 using HPMAPI.Repositories;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ namespace HPMAPI.GraphQL.Queries
     {
         public RepositoryQuery(IRepositories repositories)
         {
-            Field<ListGraphType<Repository>>(
+            Field<ListGraphType<RepositoryType>>(
                "repositories",
                resolve: context => repositories.GetAll()
            );
 
-            Field<Repository>(
+            Field<RepositoryType>(
                "repository",
                arguments: new QueryArguments(new QueryArgument<StringGraphType> { Name = "name" }),
                resolve: context =>
@@ -28,6 +29,7 @@ namespace HPMAPI.GraphQL.Queries
                     );
                }
            );
+
         }
     }
 }

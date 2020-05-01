@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace HPMAPI.GraphQL.Types
 {
-    public class App : ObjectGraphType<HPMAPI.Entities.App>
+    public class DriverType : ObjectGraphType<HPMAPI.Entities.Driver>
     {
-        public App()
+        public DriverType()
         {
             Field(x => x.id);
             Field(x => x.name);
             Field(x => x.@namespace);
-            Field(x => x.alternateNames);
+
+            Field<ListGraphType<AlternateNameType>>("alternateNames");
             Field(x => x.location);
             Field(x => x.required);
-            Field(x => x.oauth, nullable: true);
             Field(x => x.version, nullable: true);
         }
     }

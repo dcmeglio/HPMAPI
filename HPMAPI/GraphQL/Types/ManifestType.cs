@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace HPMAPI.GraphQL.Types
 {
-    public class Manifest : ObjectGraphType<HPMAPI.Entities.Manifest>
+    public class ManifestType : ObjectGraphType<HPMAPI.Entities.Manifest>
     {
-        public Manifest()
+        public ManifestType()
         {
             Field(x => x.packageName);
             Field(x => x.documentationLink, nullable: true);
@@ -20,8 +20,8 @@ namespace HPMAPI.GraphQL.Types
             Field(x => x.minimumHEVersion);
             Field(x => x.version);
 
-            Field<ListGraphType<Driver>>("drivers");
-            Field<ListGraphType<App>>("apps");
+            Field<ListGraphType<DriverType>>("drivers");
+            Field<ListGraphType<AppType>>("apps");
         }
     }
 }

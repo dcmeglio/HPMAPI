@@ -1,4 +1,5 @@
 ﻿using HPMAPI.Entities;
+using HPMAPI.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,6 +12,13 @@ namespace HPMAPI.Repositories
 {
     public class Repositories : IRepositories
     {
+        private IIndexer LuceneIndex;
+        public Repositories(IIndexer luceneIndex)
+        {
+            LuceneIndex = luceneIndex;
+
+
+        }
         public List<Repository> GetAll()
         {
             WebClient wc = new WebClient();

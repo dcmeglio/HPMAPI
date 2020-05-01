@@ -15,11 +15,18 @@ using Newtonsoft.Json;
 using HPMAPI.GraphQL.Schemas;
 using GraphQL.Server.Ui.Playground;
 using HPMAPI.Repositories;
+using HPMAPI.Interfaces;
 
 namespace HPMAPI
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -30,13 +37,15 @@ namespace HPMAPI
             });
             services.AddGraphQL(o => { o.ExposeExceptions = false; })
                 .AddGraphTypes(ServiceLifetime.Scoped);
-
+            services.AddSingleton<IIndexer, CognitiveSearchIndex>();
             services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
             services.AddScoped<RepositorySchema>();
-            services.AddScoped<IRepositories, HPMAPI.Repositories.Repositories>();
+            services.AddSingleton<IRepositories, HPMAPI.Repositories.Repositories>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
+            services.Configure<AzureSettings>(Configuration.GetSection("AzureConfig"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
