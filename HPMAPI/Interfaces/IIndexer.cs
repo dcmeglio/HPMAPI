@@ -7,9 +7,8 @@ namespace HPMAPI.Interfaces
 {
     public interface IIndexer
     {
-        public void AddPackages(IList<Entities.Package> pkg);
-        public void DeleteAll();
-        List<string> Search(string searchString);
+        public void AddRepository(Entities.Repository repo);
+        IEnumerable<string> Search(string searchString);
 
 
     }

@@ -11,7 +11,6 @@ namespace HPMAPI
 {
     public class RefreshIndexCache : IHostedService, IDisposable
     {
-        private int executionCount = 0;
         private Timer timer;
         private IIndexer indexer;
         private IRepositories repositories;
@@ -34,11 +33,10 @@ namespace HPMAPI
         {
             lock (this)
             {
-                indexer.DeleteAll();
                 var repos = repositories.GetAll();
                 foreach (var repo in repos)
                 {
-                    indexer.AddPackages(repo.packages);
+                    indexer.AddRepository(repo);
                 }
             }
         }

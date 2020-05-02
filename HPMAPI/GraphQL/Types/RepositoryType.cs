@@ -1,4 +1,5 @@
 ﻿using GraphQL.Types;
+using HPMAPI.GraphQL.Helpers;
 using HPMAPI.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace HPMAPI.GraphQL.Types
 {
     public class RepositoryType : ObjectGraphType<HPMAPI.Entities.Repository>
     {
-        public RepositoryType(IIndexer luceneIndex)
+        public RepositoryType(IIndexer indexer)
         {
             Field(x => x.name);
             Field(x => x.location);
@@ -39,20 +40,14 @@ namespace HPMAPI.GraphQL.Types
 
                          if (search != null)
                          {
-                             var matches = luceneIndex.Search(search);
+                             var matches = indexer.Search(search);
                              if (matches.Any())
                                  results = results.Where(x => matches.Contains(x.location));
                              else
                                  return null;
                          }
-                         if (offset != null)
-                             results = results.Skip(offset.Value);
-                         if (size != null)
-                             results = results.Take(size.Value);
-                         return results;
-                     }); ;
-
-
+                         return GraphQLHelpers.PageResults(results, size, offset);
+                     });
         }
     }
 }
