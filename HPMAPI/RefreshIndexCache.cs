@@ -1,7 +1,9 @@
-﻿using HPMAPI.Interfaces;
+﻿using HPMAPI.Configuration;
+using HPMAPI.Interfaces;
 using HPMAPI.Repositories;
 using HPMAPI.Utilities;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -14,16 +16,18 @@ namespace HPMAPI
         private Task timer;
         private IIndexer indexer;
         private IRepositories repositories;
+        private HPMSettings settings;
 
-        public RefreshIndexCache(IRepositories repo, IIndexer index)
+        public RefreshIndexCache(IRepositories repo, IIndexer index, IOptions<HPMSettings> hpmSettings)
         {
             indexer = index;
             repositories = repo;
+            settings = hpmSettings.Value;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            timer = PeriodicTask.Run(() => DoWork(), TimeSpan.Zero, TimeSpan.FromMinutes(2), stoppingToken);
+            timer = PeriodicTask.Run(() => DoWork(), TimeSpan.Zero, TimeSpan.FromHours(settings.IndexRebuildFrequency), stoppingToken);
             return timer;
         }
 

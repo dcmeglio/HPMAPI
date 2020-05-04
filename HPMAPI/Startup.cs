@@ -11,6 +11,7 @@ using HPMAPI.GraphQL.Schemas;
 using GraphQL.Server.Ui.Playground;
 using HPMAPI.Repositories;
 using HPMAPI.Interfaces;
+using HPMAPI.Configuration;
 
 namespace HPMAPI
 {
@@ -35,12 +36,13 @@ namespace HPMAPI
             services.AddSingleton<IIndexer, CognitiveSearchIndex>();
             services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
             services.AddScoped<RepositorySchema>();
-            services.AddSingleton<IRepositories, HPMAPI.Repositories.Repositories>();
+            services.AddSingleton<IRepositories, Repositories.Repositories>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             services.Configure<AzureSettings>(Configuration.GetSection("AzureConfig"));
+            services.Configure<HPMSettings>(Configuration.GetSection("HPMConfig"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,7 @@
-﻿using HPMAPI.Entities;
+﻿using HPMAPI.Configuration;
+using HPMAPI.Entities;
 using HPMAPI.Interfaces;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,17 +14,15 @@ namespace HPMAPI.Repositories
 {
     public class Repositories : IRepositories
     {
-        private IIndexer LuceneIndex;
-        public Repositories(IIndexer luceneIndex)
+        private HPMSettings settings;
+        public Repositories(IOptions<HPMSettings> hpmSettings)
         {
-            LuceneIndex = luceneIndex;
-
-
+            settings = hpmSettings.Value;
         }
         public List<Repository> GetAll()
         {
             WebClient wc = new WebClient();
-            var repoliststr = wc.DownloadString("https://raw.githubusercontent.com/dcmeglio/hubitat-packagerepositories/master/repositories.json");
+            var repoliststr = wc.DownloadString(settings.RepositoryListing);
             JObject repoList = JObject.Parse(repoliststr);
             var repos = repoList["repositories"].ToObject<IEnumerable<Repository>>().ToList();
             List<Repository> results = new List<Repository>();

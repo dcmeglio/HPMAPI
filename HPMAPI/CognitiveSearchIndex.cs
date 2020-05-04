@@ -1,4 +1,5 @@
-﻿using HPMAPI.Entities;
+﻿using HPMAPI.Configuration;
+using HPMAPI.Entities;
 using HPMAPI.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Search;
