@@ -71,12 +71,12 @@ namespace HPMAPI
             }
         }
 
-        public IEnumerable<string> Search(string searchString)
+        public async Task<IEnumerable<string>> Search(string searchString)
         {
             try
             {
-                var result = searchClient.Documents.Search<Package>(searchString).Results.Select(x => x.Document.location);
-                return result;
+                var result = await searchClient.Documents.SearchAsync<Package>(searchString);
+                return result.Results.Select(x => x.Document.location);
             }
             catch (Exception e)
             {

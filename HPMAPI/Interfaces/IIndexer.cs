@@ -8,8 +8,6 @@ namespace HPMAPI.Interfaces
     public interface IIndexer
     {
         public Task AddRepository(Entities.Repository repo);
-        IEnumerable<string> Search(string searchString);
-
-
+        Task<IEnumerable<string>> Search(string searchString);
     }
 }

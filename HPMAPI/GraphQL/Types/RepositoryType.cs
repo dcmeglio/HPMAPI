@@ -4,7 +4,6 @@ using HPMAPI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace HPMAPI.GraphQL.Types
 {
@@ -18,14 +17,14 @@ namespace HPMAPI.GraphQL.Types
             Field(x => x.gitHubUrl, nullable: true);
             Field(x => x.payPalUrl, nullable: true);
             
-            Field<ListGraphType<PackageType>>("packages",
+            FieldAsync<ListGraphType<PackageType>>("packages",
                      arguments: new QueryArguments(
                         new QueryArgument<StringGraphType> { Name = "category", DefaultValue = null },
                         new QueryArgument<StringGraphType> { Name = "name", DefaultValue = null },
                         new QueryArgument<StringGraphType> { Name = "search", DefaultValue = null },
                         new QueryArgument<IntGraphType> { Name = "size", DefaultValue = null },
                         new QueryArgument<IntGraphType> { Name = "offset", DefaultValue = null }),
-                     resolve: context =>
+                     resolve: async context =>
                      {
                          IEnumerable<Entities.Package> results = context.Source.packages;
                          var category = context.GetArgument<string>("category");
@@ -40,7 +39,7 @@ namespace HPMAPI.GraphQL.Types
 
                          if (search != null)
                          {
-                             var matches = indexer.Search(search);
+                             var matches = await indexer.Search(search);
                              if (matches.Any())
                                  results = results.Where(x => matches.Contains(x.location));
                              else
