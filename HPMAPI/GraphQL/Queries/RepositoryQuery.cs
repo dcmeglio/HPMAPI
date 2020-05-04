@@ -14,17 +14,17 @@ namespace HPMAPI.GraphQL.Queries
     {
         public RepositoryQuery(IRepositories repositories)
         {
-            Field<ListGraphType<RepositoryType>>(
+            FieldAsync<ListGraphType<RepositoryType>>(
                "repositories",
-               resolve: context => repositories.GetAll()
+               resolve: async context => await repositories.GetAllAsync()
            );
 
-            Field<RepositoryType>(
+            FieldAsync<RepositoryType>(
                "repository",
                arguments: new QueryArguments(new QueryArgument<StringGraphType> { Name = "name" }),
-               resolve: context =>
+               resolve: async context =>
                {
-                   return repositories.GetAll().SingleOrDefault(x => 
+                   return (await repositories.GetAllAsync()).SingleOrDefault(x => 
                         x.name.Equals(context.GetArgument<string>("name"), StringComparison.InvariantCultureIgnoreCase)
                     );
                }

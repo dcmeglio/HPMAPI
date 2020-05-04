@@ -19,9 +19,9 @@ namespace HPMAPI
 
             string str = (string)reader.Value;
             Span<byte> buffer = new Span<byte>(new byte[str.Length]);
-            if (Convert.TryFromBase64String(str, buffer, out _))
+            if (Convert.TryFromBase64String(str, buffer, out int bytesWritten))
             {
-                return System.Text.Encoding.UTF8.GetString(buffer.ToArray());
+                return System.Text.Encoding.UTF8.GetString(buffer[0..bytesWritten]);
             }
             else
                 return reader.Value;
