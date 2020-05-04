@@ -1,12 +1,8 @@
 ﻿using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HPMAPI.GraphQL.Types
 {
-    public class ManifestType : ObjectGraphType<HPMAPI.Entities.Manifest>
+    public class ManifestType : ObjectGraphType<Entities.Manifest>
     {
         public ManifestType()
         {
@@ -19,6 +15,7 @@ namespace HPMAPI.GraphQL.Types
             Field(x => x.dateReleased);
             Field(x => x.minimumHEVersion);
             Field(x => x.version);
+            Field(x => x.betaVersion, nullable: true);
 
             Field<ListGraphType<DriverType>>("drivers");
             Field<ListGraphType<AppType>>("apps");

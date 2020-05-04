@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace HPMAPI.GraphQL.Types
 {
-    public class RepositoryType : ObjectGraphType<HPMAPI.Entities.Repository>
+    public class RepositoryType : ObjectGraphType<Entities.Repository>
     {
         public RepositoryType(IIndexer indexer)
         {
@@ -19,11 +19,11 @@ namespace HPMAPI.GraphQL.Types
             
             FieldAsync<ListGraphType<PackageType>>("packages",
                      arguments: new QueryArguments(
-                        new QueryArgument<StringGraphType> { Name = "category", DefaultValue = null },
-                        new QueryArgument<StringGraphType> { Name = "name", DefaultValue = null },
-                        new QueryArgument<StringGraphType> { Name = "search", DefaultValue = null },
-                        new QueryArgument<IntGraphType> { Name = "size", DefaultValue = null },
-                        new QueryArgument<IntGraphType> { Name = "offset", DefaultValue = null }),
+                        new QueryArgument<StringGraphType> { Name = "category" },
+                        new QueryArgument<StringGraphType> { Name = "name" },
+                        new QueryArgument<StringGraphType> { Name = "search" },
+                        new QueryArgument<IntGraphType> { Name = "size" },
+                        new QueryArgument<IntGraphType> { Name = "offset" }),
                      resolve: async context =>
                      {
                          IEnumerable<Entities.Package> results = context.Source.packages;

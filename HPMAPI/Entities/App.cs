@@ -9,8 +9,10 @@ namespace HPMAPI.Entities
         public string @namespace { get; set; }
         public IList<AlternateName> alternateNames { get; set; }
         public string location { get; set; }
+        public string betaLocation { get; set; }
         public bool required { get; set; }
         public bool oauth { get; set; }
         public string version { get; set; }
+        public string betaVersion { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace HPMAPI.Entities
         public string minimumHEVersion { get; set; }
         public string dateReleased { get; set; }
         public string version { get; set; }
+        public string betaVersion { get; set; }
         public IList<App> apps { get; set; }
         public IList<Driver> drivers { get; set; }
     }

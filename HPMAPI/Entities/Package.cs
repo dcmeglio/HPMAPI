@@ -19,5 +19,7 @@ namespace HPMAPI.Entities
         [IsSearchable]
         [Analyzer(AnalyzerName.AsString.EnMicrosoft)]
         public string description { get; set; }
+
+        public string betaLocation { get; set; }
     }
 }

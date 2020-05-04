@@ -1,12 +1,8 @@
 ﻿using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HPMAPI.GraphQL.Types
 {
-    public class AppType : ObjectGraphType<HPMAPI.Entities.App>
+    public class AppType : ObjectGraphType<Entities.App>
     {
         public AppType()
         {
@@ -18,6 +14,8 @@ namespace HPMAPI.GraphQL.Types
             Field(x => x.required);
             Field(x => x.oauth, nullable: true);
             Field(x => x.version, nullable: true);
+            Field(x => x.betaVersion, nullable: true);
+            Field(x => x.betaLocation, nullable: true);
         }
     }
 }
