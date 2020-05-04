@@ -47,6 +47,7 @@ namespace HPMAPI.GraphQL.Queries
                arguments: new QueryArguments(
                         new QueryArgument<StringGraphType> { Name = "category" },
                         new QueryArgument<StringGraphType> { Name = "name" },
+                        new QueryArgument<StringGraphType> { Name = "location" },
                         new QueryArgument<StringGraphType> { Name = "search" },
                         new QueryArgument<IntGraphType> { Name = "size" },
                         new QueryArgument<IntGraphType> { Name = "offset" }),
@@ -55,6 +56,7 @@ namespace HPMAPI.GraphQL.Queries
                    IEnumerable<Entities.Package> results = await packages.GetAllAsync();
                    var category = context.GetArgument<string>("category");
                    var name = context.GetArgument<string>("name");
+                   var location = context.GetArgument<string>("location");
                    var search = context.GetArgument<string>("search");
                    var offset = context.GetArgument<int?>("offset");
                    var size = context.GetArgument<int?>("size");
@@ -62,6 +64,8 @@ namespace HPMAPI.GraphQL.Queries
                        results = results.Where(x => x.category.Equals(category, StringComparison.InvariantCultureIgnoreCase));
                    if (name != null)
                        results = results.Where(x => x.name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+                   if (location != null)
+                       results = results.Where(x => x.location == location);
 
                    if (search != null)
                    {
