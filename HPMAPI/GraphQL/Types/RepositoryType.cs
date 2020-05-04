@@ -39,9 +39,9 @@ namespace HPMAPI.GraphQL.Types
 
                          if (search != null)
                          {
-                             var matches = await indexer.Search(search);
+                             var matches = await indexer.Search(search, offset, size);
                              if (matches.Any())
-                                 results = results.Where(x => matches.Contains(x.location));
+                                 return results.Where(x => matches.Contains(x.location));
                              else
                                  return null;
                          }

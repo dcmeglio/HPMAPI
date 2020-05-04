@@ -85,5 +85,25 @@ namespace HPMAPI
                 return null;
             }
         }
+
+        public async Task<IEnumerable<string>> Search(string searchString, int? offset, int? size)
+        {
+            offset ??= 0;
+            var searchParams = new SearchParameters
+            {
+                Skip = offset,
+                Top = size
+            };
+            try
+            {
+                var result = await searchClient.Documents.SearchAsync<Package>(searchString, searchParams);
+                return result.Results.Select(x => x.Document.location);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine($"Exception during search {searchString} {e}");
+                return null;
+            }
+        }
     }
 }

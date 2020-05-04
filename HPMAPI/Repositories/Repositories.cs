@@ -19,7 +19,7 @@ namespace HPMAPI.Repositories
         {
             settings = hpmSettings.Value;
         }
-        public List<Repository> GetAll()
+        public IEnumerable<Repository> GetAll()
         {
             WebClient wc = new WebClient();
             var repoliststr = wc.DownloadString(settings.RepositoryListing);
@@ -39,7 +39,7 @@ namespace HPMAPI.Repositories
             return results;
         }
 
-        public async Task<List<Repository>> GetAllAsync()
+        public async Task<IEnumerable<Repository>> GetAllAsync()
         {
             WebClient wc = new WebClient();
             var repoliststr = await wc.DownloadStringTaskAsync(settings.RepositoryListing);
@@ -57,6 +57,51 @@ namespace HPMAPI.Repositories
                 results.Add(repoFileContents);
             }
             return results;
+        }
+
+        public Repository GetByName(string name)
+        {
+            WebClient wc = new WebClient();
+            var repoliststr = wc.DownloadString(settings.RepositoryListing);
+            JObject repoList = JObject.Parse(repoliststr);
+            var repos = repoList["repositories"].ToObject<IEnumerable<Repository>>().ToList();
+            foreach (var repo in repos)
+            {
+                if (repo.name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    wc = new WebClient();
+                    var repostr = wc.DownloadString(repo.location);
+
+                    var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
+                    repoFileContents.name = repo.name;
+                    repoFileContents.location = repo.location;
+                    return repoFileContents;
+                }
+                
+            }
+            return null;
+        }
+
+        public async Task<Repository> GetByNameAsync(string name)
+        {
+            WebClient wc = new WebClient();
+            var repoliststr = await wc.DownloadStringTaskAsync(settings.RepositoryListing);
+            JObject repoList = JObject.Parse(repoliststr);
+            var repos = repoList["repositories"].ToObject<IEnumerable<Repository>>().ToList();
+            foreach (var repo in repos)
+            {
+                if (repo.name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    wc = new WebClient();
+                    var repostr = await wc.DownloadStringTaskAsync(repo.location);
+
+                    var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
+                    repoFileContents.name = repo.name;
+                    repoFileContents.location = repo.location;
+                    return repoFileContents;
+                }
+            }
+            return null;
         }
     }
 }

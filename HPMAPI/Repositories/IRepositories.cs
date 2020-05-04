@@ -6,7 +6,10 @@ namespace HPMAPI.Repositories
 {
     public interface IRepositories
     {
-        List<Repository> GetAll();
-        Task<List<Repository>> GetAllAsync();
+        IEnumerable<Repository> GetAll();
+        Task<IEnumerable<Repository>> GetAllAsync();
+
+        Repository GetByName(string name);
+        Task<Repository> GetByNameAsync(string name);
     }
 }

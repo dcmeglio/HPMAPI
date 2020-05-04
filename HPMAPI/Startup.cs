@@ -37,6 +37,7 @@ namespace HPMAPI
             services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
             services.AddScoped<RepositorySchema>();
             services.AddSingleton<IRepositories, Repositories.Repositories>();
+            services.AddSingleton<IPackages, Packages>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);

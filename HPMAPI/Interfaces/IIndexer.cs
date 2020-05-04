@@ -7,5 +7,6 @@ namespace HPMAPI.Interfaces
     {
         public Task AddRepository(Entities.Repository repo);
         Task<IEnumerable<string>> Search(string searchString);
+        Task<IEnumerable<string>> Search(string searchString, int? offset, int? size);
     }
 }
