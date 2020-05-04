@@ -7,7 +7,7 @@ namespace HPMAPI.Interfaces
 {
     public interface IIndexer
     {
-        public void AddRepository(Entities.Repository repo);
+        public Task AddRepository(Entities.Repository repo);
         IEnumerable<string> Search(string searchString);
 
 

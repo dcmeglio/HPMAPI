@@ -1,5 +1,6 @@
 ﻿using HPMAPI.Interfaces;
 using HPMAPI.Repositories;
+using HPMAPI.Utilities;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace HPMAPI
 {
     public class RefreshIndexCache : IHostedService, IDisposable
     {
-        private Timer timer;
+        private Task timer;
         private IIndexer indexer;
         private IRepositories repositories;
 
@@ -23,30 +24,27 @@ namespace HPMAPI
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromHours(1));
-
-            return Task.CompletedTask;
+            timer = PeriodicTask.Run(() => DoWork(), TimeSpan.Zero, TimeSpan.FromMinutes(2), stoppingToken);
+            return timer;
         }
 
-        private void DoWork(object state)
+        private void DoWork()
         {
+            List<Task> tasks = new List<Task>();
             lock (this)
             {
                 var repos = repositories.GetAll();
                 foreach (var repo in repos)
                 {
-                    indexer.AddRepository(repo);
+                    tasks.Add(indexer.AddRepository(repo));
                 }
+                Task.WaitAll(tasks.ToArray());
             }
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
-
-            timer?.Change(Timeout.Infinite, 0);
-
-            return Task.CompletedTask;
+            return timer;
         }
 
         public void Dispose()

@@ -38,12 +38,12 @@ namespace HPMAPI
                 System.Diagnostics.Trace.WriteLine($"Error connecting to Azure services for index: {e}");
             }
         }
-        public void AddRepository(Repository repository)
+        public async Task AddRepository(Repository repository)
         {
             List<Package> packagesToDelete = new List<Package>();
             try
             {
-                var item = cosmosContainer.ReadItemAsync<dynamic>(repository.id, new PartitionKey(repository.location)).GetAwaiter().GetResult();
+                var item = await cosmosContainer.ReadItemAsync<dynamic>(repository.id, new PartitionKey(repository.location));
 
                 foreach (var package in item.Resource.packages)
                 {
@@ -51,13 +51,13 @@ namespace HPMAPI
                         packagesToDelete.Add(package);
                 }
 
-                cosmosContainer.UpsertItemAsync(repository, new PartitionKey(repository.location)).GetAwaiter().GetResult();
+                await cosmosContainer.UpsertItemAsync(repository, new PartitionKey(repository.location));
                 var batch = IndexBatch.MergeOrUpload<Package>(repository.packages);
                 searchClient.Documents.Index(batch);
                 if (packagesToDelete.Any())
                 {
                     batch = IndexBatch.Delete(packagesToDelete);
-                    searchClient.Documents.Index(batch);
+                    await searchClient.Documents.IndexAsync(batch);
                 }
             }
             catch (CosmosException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)

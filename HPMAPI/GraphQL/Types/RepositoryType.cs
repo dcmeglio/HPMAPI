@@ -17,7 +17,7 @@ namespace HPMAPI.GraphQL.Types
             Field(x => x.author);
             Field(x => x.gitHubUrl, nullable: true);
             Field(x => x.payPalUrl, nullable: true);
-
+            
             Field<ListGraphType<PackageType>>("packages",
                      arguments: new QueryArguments(
                         new QueryArgument<StringGraphType> { Name = "category", DefaultValue = null },
