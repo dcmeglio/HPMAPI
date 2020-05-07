@@ -44,7 +44,7 @@ namespace HPMAPI
             List<Package> packagesToDelete = new List<Package>();
             try
             {
-                var item = await cosmosContainer.ReadItemAsync<dynamic>(repository.id, new PartitionKey(repository.location));
+                var item = await cosmosContainer.ReadItemAsync<Repository>(repository.id, new PartitionKey(repository.location));
 
                 foreach (var package in item.Resource.packages)
                 {
@@ -53,6 +53,18 @@ namespace HPMAPI
                 }
 
                 await cosmosContainer.UpsertItemAsync(repository, new PartitionKey(repository.location));
+            }
+            catch (CosmosException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // All good, swallow the exception.
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine($"Error adding repository {repository.location}: {e}");
+                return;
+            }
+            try
+            {
                 var batch = IndexBatch.MergeOrUpload<Package>(repository.packages);
                 searchClient.Documents.Index(batch);
                 if (packagesToDelete.Any())
@@ -60,10 +72,6 @@ namespace HPMAPI
                     batch = IndexBatch.Delete(packagesToDelete);
                     await searchClient.Documents.IndexAsync(batch);
                 }
-            }
-            catch (CosmosException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                // All good, swallow the exception.
             }
             catch (Exception e)
             {
