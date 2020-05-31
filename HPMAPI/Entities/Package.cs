@@ -12,6 +12,9 @@ namespace HPMAPI.Entities
         [IsSearchable]
         [Analyzer(AnalyzerName.AsString.EnMicrosoft)]
         public string category { get; set; }
+        [IsSearchable]
+        [Analyzer(AnalyzerName.AsString.EnMicrosoft)]
+        public string secondaryCategory { get; set; }
         [System.ComponentModel.DataAnnotations.Key]
         [IsFilterable, IsRetrievable(true)]
         [JsonConverter(typeof(Base64JsonConverter))]

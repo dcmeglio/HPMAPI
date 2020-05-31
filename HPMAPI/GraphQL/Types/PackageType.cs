@@ -8,6 +8,7 @@ namespace HPMAPI.GraphQL.Types
         {
             Field(x => x.name);
             Field(x => x.category);
+            Field(x => x.secondaryCategory);
             Field(x => x.location);
             Field(x => x.betaLocation, nullable: true);
             Field(x => x.description);
