@@ -12,6 +12,7 @@ using GraphQL.Server.Ui.Playground;
 using HPMAPI.Repositories;
 using HPMAPI.Interfaces;
 using HPMAPI.Configuration;
+using AutoMapper;
 
 namespace HPMAPI
 {
@@ -44,6 +45,7 @@ namespace HPMAPI
 
             services.Configure<AzureSettings>(Configuration.GetSection("AzureConfig"));
             services.Configure<HPMSettings>(Configuration.GetSection("HPMConfig"));
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

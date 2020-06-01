@@ -1,4 +1,5 @@
-﻿using HPMAPI.Configuration;
+﻿using AutoMapper;
+using HPMAPI.Configuration;
 using HPMAPI.Entities;
 using HPMAPI.Interfaces;
 using Microsoft.Azure.Cosmos;
@@ -21,14 +22,16 @@ namespace HPMAPI
         private CosmosClient cosmosClient { get; set; }
         private Database cosmosDatabase { get; set; }
         private Container cosmosContainer { get; set; }
-        public CognitiveSearchIndex(IOptions<AzureSettings> settings)
+        private IMapper automapper { get; set; }
+        public CognitiveSearchIndex(IOptions<AzureSettings> settings, IMapper mapper)
         {
             try
             {
+                automapper = mapper;
                 azureSettings = settings.Value;
                 serviceClient = new SearchServiceClient(azureSettings.SearchServiceName, new SearchCredentials(azureSettings.SearchServiceAPIKey));
                 if (!serviceClient.Indexes.Exists(azureSettings.SearchServiceIndex))
-                    serviceClient.Indexes.Create(new Index(azureSettings.SearchServiceIndex, FieldBuilder.BuildForType<Package>()));
+                    serviceClient.Indexes.Create(new Index(azureSettings.SearchServiceIndex, FieldBuilder.BuildForType<CognitiveSearchPackage>()));
                 searchClient = new SearchIndexClient(azureSettings.SearchServiceName, azureSettings.SearchServiceIndex, new SearchCredentials(azureSettings.SearchServiceAPIKey)); 
                 cosmosClient = new CosmosClient(azureSettings.CosmosEndpoint, azureSettings.CosmosKey);
                 cosmosDatabase = cosmosClient.GetDatabase(azureSettings.CosmosDatabase);
@@ -65,11 +68,16 @@ namespace HPMAPI
             }
             try
             {
-                var batch = IndexBatch.MergeOrUpload<Package>(repository.packages);
+                var items = automapper.Map<IList<Package>, IList<CognitiveSearchPackage>>(repository.packages);
+                foreach (var item in items)
+                {
+                    item.author = repository.author;
+                }
+                var batch = IndexBatch.MergeOrUpload<CognitiveSearchPackage>(items);
                 searchClient.Documents.Index(batch);
                 if (packagesToDelete.Any())
                 {
-                    batch = IndexBatch.Delete(packagesToDelete);
+                    batch = IndexBatch.Delete(automapper.Map<List<Package>,List<CognitiveSearchPackage>>(packagesToDelete));
                     await searchClient.Documents.IndexAsync(batch);
                 }
             }
@@ -84,8 +92,8 @@ namespace HPMAPI
         {
             try
             {
-                var result = await searchClient.Documents.SearchAsync<Package>(searchString);
-                return result.Results.Select(x => x.Document.location);
+                var result = await searchClient.Documents.SearchAsync<CognitiveSearchPackage>(searchString);
+                return automapper.Map<List<CognitiveSearchPackage>, List<Package>>(result.Results.Select(d => d.Document).ToList()).Select(x => x.location);
             }
             catch (Exception e)
             {
@@ -104,8 +112,8 @@ namespace HPMAPI
             };
             try
             {
-                var result = await searchClient.Documents.SearchAsync<Package>(searchString, searchParams);
-                return result.Results.Select(x => x.Document.location);
+                var result = await searchClient.Documents.SearchAsync<CognitiveSearchPackage>(searchString, searchParams);
+                return automapper.Map<List<CognitiveSearchPackage>, List<Package>>(result.Results.Select(d => d.Document).ToList()).Select(x => x.location);
             }
             catch (Exception e)
             {
