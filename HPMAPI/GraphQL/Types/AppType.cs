@@ -16,6 +16,7 @@ namespace HPMAPI.GraphQL.Types
             Field(x => x.version, nullable: true);
             Field(x => x.betaVersion, nullable: true);
             Field(x => x.betaLocation, nullable: true);
+            Field(x => x.primary);
         }
     }
 }

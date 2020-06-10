@@ -46,6 +46,7 @@ namespace HPMAPI.GraphQL.Queries
                "packages",
                arguments: new QueryArguments(
                         new QueryArgument<StringGraphType> { Name = "category" },
+                        new QueryArgument<ListGraphType<StringGraphType>> { Name = "tags" },
                         new QueryArgument<StringGraphType> { Name = "name" },
                         new QueryArgument<StringGraphType> { Name = "location" },
                         new QueryArgument<StringGraphType> { Name = "search" },
@@ -58,10 +59,13 @@ namespace HPMAPI.GraphQL.Queries
                    var name = context.GetArgument<string>("name");
                    var location = context.GetArgument<string>("location");
                    var search = context.GetArgument<string>("search");
+                   var tags = context.GetArgument<List<string>>("tags");
                    var offset = context.GetArgument<int?>("offset");
                    var size = context.GetArgument<int?>("size");
                    if (category != null)
-                       results = results.Where(x => x.category.Equals(category, StringComparison.InvariantCultureIgnoreCase) || x.secondaryCategory.Equals(category, StringComparison.InvariantCultureIgnoreCase));
+                       results = results.Where(x => x.category.Equals(category, StringComparison.InvariantCultureIgnoreCase));
+                   if (tags != null)
+                       results = results.Where(r => r.tags?.Any(t => tags.Any(st => st.Equals(t, StringComparison.InvariantCultureIgnoreCase))) == true);
                    if (name != null)
                        results = results.Where(x => x.name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
                    if (location != null)

@@ -14,5 +14,6 @@ namespace HPMAPI.Entities
         public bool oauth { get; set; }
         public string version { get; set; }
         public string betaVersion { get; set; }
+        public bool primary { get; set; }
     }
 }
