@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace HPMAPI
@@ -27,5 +28,9 @@ namespace HPMAPI
         public string author { get; set; }
 
         public string betaLocation { get; set; }
+
+        [IsSearchable]
+        [Analyzer(AnalyzerName.AsString.EnMicrosoft)]
+        public IEnumerable<string> tags { get; set; }
     }
 }
