@@ -63,7 +63,7 @@ namespace HPMAPI.GraphQL.Queries
                    var offset = context.GetArgument<int?>("offset");
                    var size = context.GetArgument<int?>("size");
                    if (category != null)
-                       results = results.Where(x => x.category.Equals(category, StringComparison.InvariantCultureIgnoreCase));
+                       results = results.Where(x => x.category?.Equals(category, StringComparison.InvariantCultureIgnoreCase) == true);
                    if (tags != null)
                        results = results.Where(r => r.tags?.Any(t => tags.Any(st => st.Equals(t, StringComparison.InvariantCultureIgnoreCase))) == true);
                    if (name != null)
