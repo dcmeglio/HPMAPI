@@ -30,11 +30,17 @@ namespace HPMAPI.Repositories
             {
                 wc = new WebClient();
                 var repostr = wc.DownloadString(repo.location);
+                try
+                {
+                    var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
+                    repoFileContents.name = repo.name;
+                    repoFileContents.location = repo.location;
+                    results.Add(repoFileContents);
+                }
+                catch
+                {
 
-                var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
-                repoFileContents.name = repo.name;
-                repoFileContents.location = repo.location;
-                results.Add(repoFileContents);
+                }
             }
             return results;
         }
@@ -50,11 +56,17 @@ namespace HPMAPI.Repositories
             {
                 wc = new WebClient();
                 var repostr = await wc.DownloadStringTaskAsync(repo.location);
+                try
+                {
+                    var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
+                    repoFileContents.name = repo.name;
+                    repoFileContents.location = repo.location;
+                    results.Add(repoFileContents);
+                }
+                catch
+                {
 
-                var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
-                repoFileContents.name = repo.name;
-                repoFileContents.location = repo.location;
-                results.Add(repoFileContents);
+                }
             }
             return results;
         }
@@ -72,10 +84,17 @@ namespace HPMAPI.Repositories
                     wc = new WebClient();
                     var repostr = wc.DownloadString(repo.location);
 
-                    var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
-                    repoFileContents.name = repo.name;
-                    repoFileContents.location = repo.location;
-                    return repoFileContents;
+                    try
+                    {
+                        var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
+                        repoFileContents.name = repo.name;
+                        repoFileContents.location = repo.location;
+                        return repoFileContents;
+                    }
+                    catch
+                    {
+
+                    }
                 }
                 
             }
@@ -94,11 +113,17 @@ namespace HPMAPI.Repositories
                 {
                     wc = new WebClient();
                     var repostr = await wc.DownloadStringTaskAsync(repo.location);
+                    try
+                    {
+                        var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
+                        repoFileContents.name = repo.name;
+                        repoFileContents.location = repo.location;
+                        return repoFileContents;
+                    }
+                    catch
+                    {
 
-                    var repoFileContents = JsonConvert.DeserializeObject<Repository>(repostr);
-                    repoFileContents.name = repo.name;
-                    repoFileContents.location = repo.location;
-                    return repoFileContents;
+                    }
                 }
             }
             return null;
